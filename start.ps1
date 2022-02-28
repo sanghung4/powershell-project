@@ -65,4 +65,5 @@ function StartDocker() {
         Start-Sleep 6
     }
     "Docker started"
+    
 }
