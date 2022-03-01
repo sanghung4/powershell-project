@@ -19,4 +19,4 @@ $body = “{`n    `“resources`“: {`n        `“repositories`“: {`n       
 $response = Invoke-RestMethod ‘https://dev.azure.com/extHungSang/SonarCubeExample/_apis/pipelines/3/runs?api-version=6.0-preview.1’ -Method ‘POST’ -Headers $headers -Body $body
 $response | ConvertTo-Json
 
-Write-Output $headers
+Write-Output $response
