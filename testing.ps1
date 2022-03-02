@@ -1,3 +1,5 @@
+
+
 $tests = Read-Host "Which tests would you like to run"
 
 # create if for loop to go to the next prompt
@@ -52,3 +54,4 @@ Write-Output "Test selected: $tests, service selected $svc, environment selected
 #            Write-Host "`nYou have selected to Quit",
 #           Return
 #        }
+    #}
