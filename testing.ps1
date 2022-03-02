@@ -1,12 +1,8 @@
-
-
 # create if for loop to go to the next prompt
 $continue = $false
 While (!$continue) {
     $tests = Read-Host "Which tests would you like to run?"
     if ($tests -eq "1") {
-        Write-Host "Script:" $PSCommandPath
-        Write-Host "Path:" $PSScriptRoot 
         $continue = $true
         }
     #ElseIf ($tests -eq "2") {
@@ -68,7 +64,7 @@ While (!$continue) {
     }
 }
 
-Write-Output "Test selected: $tests, service selected $svc, environment selected $env"
+Write-Host "Test selected: $tests, Service selected: $svc, Environment selected: $env"
 
 # do {
 #     Write-Host "`n============= Pick the Environment=============="
@@ -93,7 +89,7 @@ Write-Output "Test selected: $tests, service selected $svc, environment selected
 
 
 
-Write-Output "Beginning Tests..."
+Write-Host "Starting Pipeline..."
 
 $config = ([xml](Get-Content config.xml)).root
 $auth = $config.username + ':' + $config.password
@@ -105,7 +101,7 @@ $headers = @{
     }
 $body = “{`n    `“resources`“: {`n        `“repositories`“: {`n            `“self`“: {`n                `“refName`“: `“refs/heads/$env`“`n            }`n        }`n    },    `n    `“templateParameters`“: {`n        `“pomFile`“: `“pom.xml`“`n    }`n}”
 
-$response = Invoke-RestMethod ‘https://dev.azure.com/extHungSang/SonarCubeExample/_apis/pipelines/3/runs?api-version=6.0-preview.1’ -Method ‘POST’ -Headers $headers -Body $body
+$response = Invoke-RestMethod ‘https://dev.azure.com/extHungSang/SonarCubeExample/_apis/pipelines/6/runs?api-version=6.0-preview.1’ -Method ‘POST’ -Headers $headers -Body $body
 $response | ConvertTo-Json
 
-Write-Output $response
+Write-Host "Triggered build " $response.name " for pipeline - " $response.pipeline.name
