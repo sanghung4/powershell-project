@@ -102,6 +102,6 @@ $headers = @{
 $body = “{`n    `“resources`“: {`n        `“repositories`“: {`n            `“self`“: {`n                `“refName`“: `“refs/heads/$env`“`n            }`n        }`n    },    `n    `“templateParameters`“: {`n        `“pomFile`“: `“pom.xml`“`n    }`n}”
 
 $response = Invoke-RestMethod ‘https://dev.azure.com/extHungSang/SonarCubeExample/_apis/pipelines/6/runs?api-version=6.0-preview.1’ -Method ‘POST’ -Headers $headers -Body $body
-$response | ConvertTo-Json
+#$response | ConvertTo-Json
 
-Write-Host "Triggered build " $response.name " for pipeline - " $response.pipeline.name
+Write-Host "Triggered build" $response.name "for pipeline -" $response.pipeline.name
