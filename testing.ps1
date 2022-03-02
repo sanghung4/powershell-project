@@ -45,20 +45,17 @@ $continue = $false
 While (!$continue) {
     $env = Read-Host "Which environment would you like to test in"
     if ($env -eq "1") {
-        Write-Host "Script:" $PSCommandPath
-        Write-Host "Path:" $PSScriptRoot 
+        Write-Host "Branch - Development"
         $env = "Development"
         $continue = $true
         }
     elseif ($env -eq "2") {
-        Write-Host "Script:" $PSCommandPath
-        Write-Host "Path:" $PSScriptRoot 
+        Write-Host "Branch - QA"
         $env = "QA"
         $continue = $true
         }
     elseif ($env -eq "3") {
-        Write-Host "Script:" $PSCommandPath
-        Write-Host "Path:" $PSScriptRoot 
+        Write-Host "Branch - azure-pipeline"
         $env = "azure-pipeline"
         $continue = $true
         }
@@ -108,7 +105,7 @@ $headers = @{
     }
 $body = “{`n    `“resources`“: {`n        `“repositories`“: {`n            `“self`“: {`n                `“refName`“: `“refs/heads/$env`“`n            }`n        }`n    },    `n    `“templateParameters`“: {`n        `“pomFile`“: `“pom.xml`“`n    }`n}”
 
-#$response = Invoke-RestMethod ‘https://dev.azure.com/extHungSang/SonarCubeExample/_apis/pipelines/3/runs?api-version=6.0-preview.1’ -Method ‘POST’ -Headers $headers -Body $body
-#$response | ConvertTo-Json
+$response = Invoke-RestMethod ‘https://dev.azure.com/extHungSang/SonarCubeExample/_apis/pipelines/3/runs?api-version=6.0-preview.1’ -Method ‘POST’ -Headers $headers -Body $body
+$response | ConvertTo-Json
 
 Write-Output $response
