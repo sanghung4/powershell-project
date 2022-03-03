@@ -1,10 +1,13 @@
 # create if for loop to go to the next prompt
 $continue = $false
 While (!$continue) {
-    $tests = Read-Host "Which tests would you like to run?"
+    $tests = Read-Host "Which tests would you like to run? `n 1 - Suite 1 `n 2 - Suite 2 `n Q - Quit `n"
     if ($tests -eq "1") {
         $continue = $true
-        }
+    }
+    elseif ($tests -eq "2") {
+        $continue = $true
+    }
     #ElseIf ($tests -eq "2") {
         #Write-Host "Script:" $PSCommandPath
         #Write-Host "Path:" $PSScriptRoot }
@@ -19,15 +22,19 @@ While (!$continue) {
 
 $continue = $false
 While (!$continue) {
-    $svc = Read-Host "Which services would you like to test?"
+    $svc = Read-Host "Which services would you like to test? `n 1 - Teller `n 2 - Loan `n 3 - DO `n Q - Quit `n"
     if ($svc -eq "1") {
-        Write-Host "Script:" $PSCommandPath
-        Write-Host "Path:" $PSScriptRoot 
+        $svc = 'pom.xml'
         $continue = $true
         }
-    #ElseIf ($tests -eq "2") {
-        #Write-Host "Script:" $PSCommandPath
-        #Write-Host "Path:" $PSScriptRoot }
+    elseif ($tests -eq "2") {
+        $svc = 'pomRegression.xml'
+        $continue = $true
+    }
+    elseif ($tests -eq "2") {
+        $svc = 'pomRegression.xml'
+        $continue = $true
+    }
     elseif ($svc -eq "Q") {
         Write-Host "Exiting"
         Exit
@@ -39,7 +46,7 @@ While (!$continue) {
 
 $continue = $false
 While (!$continue) {
-    $env = Read-Host "Which environment would you like to test in"
+    $env = Read-Host "Which environment would you like to test in? `n 1 - Development `n 2 - QA `n 3 - UAT `n"
     if ($env -eq "1") {
         Write-Host "Branch - Development"
         $env = "Development"
@@ -64,7 +71,7 @@ While (!$continue) {
     }
 }
 
-Write-Host "Test selected: $tests, Service selected: $svc, Environment selected: $env"
+#Write-Host "Test selected: $tests, Service selected: $svc, Environment selected: $env"
 
 # do {
 #     Write-Host "`n============= Pick the Environment=============="
@@ -101,7 +108,15 @@ $headers = @{
     }
 $body = “{`n    `“resources`“: {`n        `“repositories`“: {`n            `“self`“: {`n                `“refName`“: `“refs/heads/$env`“`n            }`n        }`n    },    `n    `“templateParameters`“: {`n        `“pomFile`“: `“pom.xml`“`n    }`n}”
 
-$response = Invoke-RestMethod ‘https://dev.azure.com/extHungSang/SonarCubeExample/_apis/pipelines/6/runs?api-version=6.0-preview.1’ -Method ‘POST’ -Headers $headers -Body $body
-#$response | ConvertTo-Json
+$buildResponse = Invoke-RestMethod ‘https://dev.azure.com/extHungSang/SonarCubeExample/_apis/pipelines/6/runs?api-version=6.0-preview.1’ -Method ‘POST’ -Headers $headers -Body $body
+$buildId = $buildResponse.id
 
-Write-Host "Triggered build" $response.name "for pipeline -" $response.pipeline.name
+$request = "https://dev.azure.com/extHungSang/SonarCubeExample/_apis/build/builds/"+$buildId+"?api-version=6.0-preview.1"
+Write-Host $request
+Write-Host "Triggered build ID:" $buildId "for pipeline -" $buildResponse.pipeline.name
+
+Start-Sleep -s 5
+
+$statusResponse = Invoke-RestMethod $request -Method ‘GET’ -Headers $headers
+
+Write-Host "Build Status: " $statusResponse.status
