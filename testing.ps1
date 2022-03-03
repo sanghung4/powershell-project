@@ -115,7 +115,7 @@ While (!$continue) {
 
 Write-Host "Starting Pipeline..."
 
-$config = ([xml](Get-Content config.xml)).root
+$config = ([xml](Get-Content ~/Documents/TestingPOC/powershell-project/config.xml)).root
 $auth = $config.username + ':' + $config.password
 $Encoded = [System.Text.Encoding]::UTF8.GetBytes($auth)
 $authorizationInfo = [System.Convert]::ToBase64String($Encoded)
@@ -129,7 +129,7 @@ $buildResponse = Invoke-RestMethod ‘https://dev.azure.com/extHungSang/SonarCub
 $buildId = $buildResponse.id
 
 $request = "https://dev.azure.com/extHungSang/SonarCubeExample/_apis/build/builds/"+$buildId+"?api-version=6.0-preview.1"
-Write-Host $request
+#Write-Host $request
 Write-Host "Triggered build ID:" $buildId "for pipeline -" $buildResponse.pipeline.name
 
 Start-Sleep -s 5
