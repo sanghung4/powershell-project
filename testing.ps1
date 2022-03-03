@@ -3,6 +3,8 @@ $continue = $false
 While (!$continue) {
     $tests = Read-Host "Which tests would you like to run? `n 1 - Suite 1 `n 2 - Suite 2 `n Q - Quit `n"
     if ($tests -eq "1") {
+        Write-Host "Test - Regression"
+        $tests = "Regression"
         $continue = $true
     }
     elseif ($tests -eq "2") {
@@ -42,6 +44,21 @@ While (!$continue) {
     else {
         Write-Host "Please select a valid value"
     }
+    #if ($svc -eq "1") {
+        #Write-Host "Script:" $PSCommandPath
+        #Write-Host "Path:" $PSScriptRoot 
+        #$continue = $true
+        #}
+    #ElseIf ($tests -eq "2") {
+        #Write-Host "Script:" $PSCommandPath
+        #Write-Host "Path:" $PSScriptRoot }
+    #elseif ($svc -eq "Q") {
+        #Write-Host "Exiting"
+        #Exit
+    #}
+    #else {
+        #Write-Host "Please select a valid value"
+    #}
 }
 
 $continue = $false
