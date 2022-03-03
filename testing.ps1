@@ -3,6 +3,8 @@ $continue = $false
 While (!$continue) {
     $tests = Read-Host "Which tests would you like to run?"
     if ($tests -eq "1") {
+        Write-Host "Test - Regression"
+        $tests = "Regression"
         $continue = $true
         }
     #ElseIf ($tests -eq "2") {
@@ -21,13 +23,20 @@ $continue = $false
 While (!$continue) {
     $svc = Read-Host "Which services would you like to test?"
     if ($svc -eq "1") {
-        Write-Host "Script:" $PSCommandPath
-        Write-Host "Path:" $PSScriptRoot 
+        Write-Host "Service - Teller"
+        $svc = "Teller"
         $continue = $true
         }
-    #ElseIf ($tests -eq "2") {
-        #Write-Host "Script:" $PSCommandPath
-        #Write-Host "Path:" $PSScriptRoot }
+    elseif ($svc -eq "2") {
+        Write-Host "Service - Loan"
+        $svc = "Loan"
+        $continue = $true
+        }
+    elseif ($svc -eq "3") {
+        Write-Host "Service - Deposit"
+        $svc = "Deposit"
+        $continue = $true
+        }
     elseif ($svc -eq "Q") {
         Write-Host "Exiting"
         Exit
@@ -35,6 +44,21 @@ While (!$continue) {
     else {
         Write-Host "Please select a valid value"
     }
+    #if ($svc -eq "1") {
+        #Write-Host "Script:" $PSCommandPath
+        #Write-Host "Path:" $PSScriptRoot 
+        #$continue = $true
+        #}
+    #ElseIf ($tests -eq "2") {
+        #Write-Host "Script:" $PSCommandPath
+        #Write-Host "Path:" $PSScriptRoot }
+    #elseif ($svc -eq "Q") {
+        #Write-Host "Exiting"
+        #Exit
+    #}
+    #else {
+        #Write-Host "Please select a valid value"
+    #}
 }
 
 $continue = $false
