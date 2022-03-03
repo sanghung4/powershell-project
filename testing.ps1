@@ -29,11 +29,11 @@ While (!$continue) {
         $svc = 'pom.xml'
         $continue = $true
         }
-    elseif ($tests -eq "2") {
+    elseif ($svc -eq "2") {
         $svc = 'pomRegression.xml'
         $continue = $true
     }
-    elseif ($tests -eq "2") {
+    elseif ($svc -eq "3") {
         $svc = 'pomRegression.xml'
         $continue = $true
     }
@@ -63,7 +63,7 @@ While (!$continue) {
 
 $continue = $false
 While (!$continue) {
-    $env = Read-Host "Which environment would you like to test in? `n 1 - Development `n 2 - QA `n 3 - UAT `n"
+    $env = Read-Host "Which environment would you like to test in? `n 1 - Development `n 2 - QA `n 3 - UAT `n Q - Quit `n"
     if ($env -eq "1") {
         Write-Host "Branch - Development"
         $env = "Development"
@@ -123,17 +123,33 @@ $headers = @{
     "Authorization"="Basic $($authorizationInfo)"
     "Content-Type"="application/json"
     }
-$body = “{`n    `“resources`“: {`n        `“repositories`“: {`n            `“self`“: {`n                `“refName`“: `“refs/heads/$env`“`n            }`n        }`n    },    `n    `“templateParameters`“: {`n        `“pomFile`“: `“pom.xml`“`n    }`n}”
+$body = “{`n    `“resources`“: {`n        `“repositories`“: {`n            `“self`“: {`n                `“refName`“: `“refs/heads/$env`“`n            }`n        }`n    },    `n    `“templateParameters`“: {`n        `“pomFile`“: `“$svc`“`n    }`n}”
 
 $buildResponse = Invoke-RestMethod ‘https://dev.azure.com/extHungSang/SonarCubeExample/_apis/pipelines/6/runs?api-version=6.0-preview.1’ -Method ‘POST’ -Headers $headers -Body $body
 $buildId = $buildResponse.id
 
 $request = "https://dev.azure.com/extHungSang/SonarCubeExample/_apis/build/builds/"+$buildId+"?api-version=6.0-preview.1"
 #Write-Host $request
-Write-Host "Triggered build ID:" $buildId "for pipeline -" $buildResponse.pipeline.name
+Write-Host "Triggered build ID:" $buildId "|" $buildResponse.name "| pipeline -" $buildResponse.pipeline.name
 
 Start-Sleep -s 5
 
 $statusResponse = Invoke-RestMethod $request -Method ‘GET’ -Headers $headers
 
-Write-Host "Build Status: " $statusResponse.status
+while (($statusResponse.status -eq "notStarted") -or ($statusResponse.status -eq "inProgress" )) {
+    $statusResponse = Invoke-RestMethod $request -Method ‘GET’ -Headers $headers
+    Write-Host "Build Status: " $statusResponse.status
+    Start-Sleep -s 15
+}
+
+$timelineRequest = "https://dev.azure.com/extHungSang/9804aa88-9db3-4b6d-a30f-e754e58b3821/_apis/build/builds/"+$buildId+"/Timeline"
+If (!($statusResponse.status -eq "succeeded")) {
+    $timelineResponse = Invoke-RestMethod $timelineRequest -Method ‘GET’ -Headers $headers
+    forEach($record in $timelineResponse.records) {
+        if (!($record.result -eq "succeeded") -and $record.type -eq "Task") {
+            Write-Host "Task" $record.name "|" $record.result "|" $record.log.url
+        }
+    }
+} else {
+    Write-Host "Build Completed"
+}
