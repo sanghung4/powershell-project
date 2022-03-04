@@ -88,32 +88,31 @@ While (!$continue) {
     }
 }
 
-#Write-Host "Test selected: $tests, Service selected: $svc, Environment selected: $env"
+$continue = $false
+While (!$continue) {
+    $option = Read-Host "Run tests locally or in the pipeline? `n 1 - Locally `n 2 - Pipeline `n Q - Quit `n"
+    if ($option -eq "1") {
+        Write-Host "Running Tests Locally"
+        Set-Location ~/Documents/TestingPOC/JavaProjectDemo
+        mvn test
+        $continue = $true
+        }
+    elseif ($option -eq "2") {
+        Write-Host "Running Tests In Pipeline"
+        CICDPipeline($tests, $svc, $env)
+        $continue = $true
+        }
+    elseif ($option -eq "Q") {
+        Write-Host "Exiting"
+        Exit
+    }
+    else {
+        Write-Host "Please select a valid value"
+    }
+}
 
-# do {
-#     Write-Host "`n============= Pick the Environment=============="
-#     Write-Host "`ta. '1' for the Prod Environment"
-#     Write-Host "`tb. '2' for the QA Environment"
-#     Write-Host "`td. 'Q' to Quit'"
-#     Write-Host "========================================================"
-#     $choice = Read-Host "`nEnter Choice"
-#     } until (($choice -eq '1') -or ($choice -eq '2') -or ($choice -eq 'Q') )
-#     switch ($choice) {
-#        '1'{
-#            Write-Host "`nYou have selected a Prod Environment"
-#        }
-#        '2'{
-#           Write-Host "`nYou have selected a Test Environment"
-#        }
-#        'Q'{
-#            Write-Host "`nYou have selected to Quit",
-#           Return
-#        }
-    #}
-
-
-
-Write-Host "Starting Pipeline..."
+function CICDPipeline($tests, $svc, $env) {
+    Write-Host "Starting Pipeline..."
 
 $config = ([xml](Get-Content ~/Documents/TestingPOC/powershell-project/config.xml)).root
 $auth = $config.username + ':' + $config.password
@@ -142,14 +141,38 @@ while (($statusResponse.status -eq "notStarted") -or ($statusResponse.status -eq
     Start-Sleep -s 15
 }
 
-$timelineRequest = "https://dev.azure.com/extHungSang/9804aa88-9db3-4b6d-a30f-e754e58b3821/_apis/build/builds/"+$buildId+"/Timeline"
-If (!($statusResponse.status -eq "succeeded")) {
-    $timelineResponse = Invoke-RestMethod $timelineRequest -Method ‘GET’ -Headers $headers
-    forEach($record in $timelineResponse.records) {
-        if (!($record.result -eq "succeeded") -and $record.type -eq "Task") {
-            Write-Host "Task" $record.name "|" $record.result "|" $record.log.url
-        }
-    }
-} else {
-    Write-Host "Build Completed"
+# $timelineRequest = "https://dev.azure.com/extHungSang/9804aa88-9db3-4b6d-a30f-e754e58b3821/_apis/build/builds/"+$buildId+"/Timeline"
+# If (!($statusResponse.status -eq "succeeded")) {
+#     $timelineResponse = Invoke-RestMethod $timelineRequest -Method ‘GET’ -Headers $headers
+#     forEach($record in $timelineResponse.records) {
+#         if (!($record.result -eq "succeeded") -and $record.type -eq "Task") {
+#             Write-Host "Task" $record.name "|" $record.result "|" $record.log.url
+#         }
+#     }
+# } else {
+#     Write-Host "Build Completed"
+# }
 }
+
+#Write-Host "Test selected: $tests, Service selected: $svc, Environment selected: $env"
+
+# do {
+#     Write-Host "`n============= Pick the Environment=============="
+#     Write-Host "`ta. '1' for the Prod Environment"
+#     Write-Host "`tb. '2' for the QA Environment"
+#     Write-Host "`td. 'Q' to Quit'"
+#     Write-Host "========================================================"
+#     $choice = Read-Host "`nEnter Choice"
+#     } until (($choice -eq '1') -or ($choice -eq '2') -or ($choice -eq 'Q') )
+#     switch ($choice) {
+#        '1'{
+#            Write-Host "`nYou have selected a Prod Environment"
+#        }
+#        '2'{
+#           Write-Host "`nYou have selected a Test Environment"
+#        }
+#        'Q'{
+#            Write-Host "`nYou have selected to Quit",
+#           Return
+#        }
+    #}
