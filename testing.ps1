@@ -143,17 +143,17 @@ while (($statusResponse.status -eq "notStarted") -or ($statusResponse.status -eq
     Start-Sleep -s 15
 }
 
-# $timelineRequest = "https://dev.azure.com/extHungSang/9804aa88-9db3-4b6d-a30f-e754e58b3821/_apis/build/builds/"+$buildId+"/Timeline"
-# If (!($statusResponse.status -eq "succeeded")) {
-#     $timelineResponse = Invoke-RestMethod $timelineRequest -Method ‘GET’ -Headers $headers
-#     forEach($record in $timelineResponse.records) {
-#         if (!($record.result -eq "succeeded") -and $record.type -eq "Task") {
-#             Write-Host "Task" $record.name "|" $record.result "|" $record.log.url
-#         }
-#     }
-# } else {
-#     Write-Host "Build Completed"
-# }
+$timelineRequest = "https://dev.azure.com/extHungSang/9804aa88-9db3-4b6d-a30f-e754e58b3821/_apis/build/builds/"+$buildId+"/Timeline"
+If (!($statusResponse.status -eq "succeeded")) {
+    $timelineResponse = Invoke-RestMethod $timelineRequest -Method ‘GET’ -Headers $headers
+    forEach($record in $timelineResponse.records) {
+        if (!($record.result -eq "succeeded") -and $record.type -eq "Task") {
+            Write-Host "Task" $record.name "|" $record.result "|" $record.log.url
+        }
+    }
+} else {
+    Write-Host "Build Completed"
+}
 }
 
 #Write-Host "Test selected: $tests, Service selected: $svc, Environment selected: $env"
