@@ -94,7 +94,9 @@ While (!$continue) {
     if ($option -eq "1") {
         Write-Host "Running Tests Locally"
         Set-Location ~/Documents/TestingPOC/JavaProjectDemo
+        docker-compose up -d
         mvn test
+        docker-compose down
         $continue = $true
         }
     elseif ($option -eq "2") {
