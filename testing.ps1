@@ -1,18 +1,26 @@
 # create if for loop to go to the next prompt
+# Prompt for tests
 $continue = $false
 While (!$continue) {
-    $tests = Read-Host "Which tests would you like to run? `n 1 - Suite 1 `n 2 - Suite 2 `n Q - Quit `n"
+    $tests = Read-Host "Which tests would you like to run? `n 1 - Regression `n 2 - Smoke `n Q - Quit `n"
     if ($tests -eq "1") {
-        Write-Host "Test - Regression"
+        Write-Host "_______________________________________"
+        Write-Host " "
+        Write-Host "Test Selected - Regression"
+        Write-Host "_______________________________________"
+        Write-Host " "
         $tests = "Regression"
         $continue = $true
     }
     elseif ($tests -eq "2") {
+        Write-Host "_______________________________________"
+        Write-Host " "
+        Write-Host "Test Selected - Smoke"
+        Write-Host "_______________________________________"
+        Write-Host " "
+        $tests = "Smoke"
         $continue = $true
     }
-    #ElseIf ($tests -eq "2") {
-        #Write-Host "Script:" $PSCommandPath
-        #Write-Host "Path:" $PSScriptRoot }
     elseif ($tests -eq "Q") {
         Write-Host "Exiting"
         Exit
@@ -22,98 +30,72 @@ While (!$continue) {
     }
 }
 
+# Prompt for Services
 $continue = $false
 While (!$continue) {
     $svc = Read-Host "Which services would you like to test? `n 1 - Teller `n 2 - Loan `n 3 - DO `n Q - Quit `n"
     if ($svc -eq "1") {
+        Write-Host "_____________________________________________"
+        Write-Host " "
+        Write-Host "Service Selected - Teller"
+        Write-Host "_____________________________________________"
+        Write-Host " "
         $svc = 'pom.xml'
         $continue = $true
         }
     elseif ($svc -eq "2") {
+        Write-Host "_____________________________________________"
+        Write-Host " "
+        Write-Host "Service Selected - Loan"
+        Write-Host "_____________________________________________"
+        Write-Host " "
         $svc = 'pomRegression.xml'
         $continue = $true
     }
     elseif ($svc -eq "3") {
+        Write-Host "_____________________________________________"
+        Write-Host " "
+        Write-Host "Service Selected - DO"
+        Write-Host "_____________________________________________"
+        Write-Host " "
         $svc = 'pomRegression.xml'
         $continue = $true
     }
     elseif ($svc -eq "Q") {
         Write-Host "Exiting"
-        Exit
+        Exit 
     }
     else {
         Write-Host "Please select a valid value"
     }
-    #if ($svc -eq "1") {
-        #Write-Host "Script:" $PSCommandPath
-        #Write-Host "Path:" $PSScriptRoot 
-        #$continue = $true
-        #}
-    #ElseIf ($tests -eq "2") {
-        #Write-Host "Script:" $PSCommandPath
-        #Write-Host "Path:" $PSScriptRoot }
-    #elseif ($svc -eq "Q") {
-        #Write-Host "Exiting"
-        #Exit
-    #}
-    #else {
-        #Write-Host "Please select a valid value"
-    #}
 }
 
+# Prompt for Environment
 $continue = $false
 While (!$continue) {
     $env = Read-Host "Which environment would you like to test in? `n 1 - Development `n 2 - QA `n 3 - UAT `n Q - Quit `n"
     if ($env -eq "1") {
-        Write-Host "Branch - Development"
+        Write-Host "_____________________________________________"
+        Write-Host " "
+        Write-Host "Branch Selected - Development"
+        Write-Host "_____________________________________________"
+        Write-Host " "
         $env = "Development"
         $continue = $true
         }
     elseif ($env -eq "2") {
-        Write-Host "Branch - QA"
-        $env = "QA"
-        $continue = $true
+        Write-Host "_____________________________________________"
+        Write-Host " "
+        Write-Host "Branch Selected - QA"
+        Write-Host "_____________________________________________"
+        Write-Host " "
         }
-    elseif ($env -eq "3") {
-        Write-Host "Branch - azure-pipeline"
-        $env = "azure-pipeline"
-        $continue = $true
-        }
-    elseif ($env -eq "Q") {
-        Write-Host "Exiting"
-        Exit
     }
-    else {
-        Write-Host "Please select a valid value"
-    }
-}
-
-#Write-Host "Test selected: $tests, Service selected: $svc, Environment selected: $env"
-
-# do {
-#     Write-Host "`n============= Pick the Environment=============="
-#     Write-Host "`ta. '1' for the Prod Environment"
-#     Write-Host "`tb. '2' for the QA Environment"
-#     Write-Host "`td. 'Q' to Quit'"
-#     Write-Host "========================================================"
-#     $choice = Read-Host "`nEnter Choice"
-#     } until (($choice -eq '1') -or ($choice -eq '2') -or ($choice -eq 'Q') )
-#     switch ($choice) {
-#        '1'{
-#            Write-Host "`nYou have selected a Prod Environment"
-#        }
-#        '2'{
-#           Write-Host "`nYou have selected a Test Environment"
-#        }
-#        'Q'{
-#            Write-Host "`nYou have selected to Quit",
-#           Return
-#        }
-    #}
-
-
-
+# Start Pipeline
+Write-Host ""
+Write-Host ""
 Write-Host "Starting Pipeline..."
+Write-Host ""
 
 $config = ([xml](Get-Content ~/Documents/TestingPOC/powershell-project/config.xml)).root
 $auth = $config.username + ':' + $config.password
